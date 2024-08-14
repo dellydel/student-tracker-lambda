@@ -94,7 +94,7 @@ functions:
         - 'src/registration_handler_post.py'
     handler: src/registration_handler_post.handler
     layers:
-      - !Ref : PythonRequirementsLambdaLayer
+      - !Ref PythonRequirementsLambdaLayer
     events:
       - http:
           path: /registration
