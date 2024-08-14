@@ -69,7 +69,7 @@ functions:
         - 'src/user_payments_handler.py'
     handler: src/user_payments_handler.handler
     layers:
-      - !Ref : PythonRequirementsLambdaLayer
+      - !Ref PythonRequirementsLambdaLayer
     events:
       - http:
           path: /user-payments
