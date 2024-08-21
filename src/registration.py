@@ -9,16 +9,17 @@ dynamodb = boto3.client('dynamodb')
 stripe.api_key = os.environ.get("STRIPE_SECRET")
 
 def getRegistrationByEmail(email):
-  response = dynamodb.scan(
-     TableName=os.environ.get("REGISTRATIONS_TABLE"),
-     FilterExpression="emailLower = :emailLower OR email = :email",
-     ExpressionAttributeValues={
-      ":emailLower": { "S": email.lower() },
-      ":email": { "S": email },
-    },
-    ProjectionExpression="amount, created, course_name",
-    )
   try:
+    response = dynamodb.scan(
+      TableName=os.environ.get("REGISTRATIONS_TABLE"),
+      FilterExpression="emailLower = :emailLower OR email = :email",
+      ExpressionAttributeValues={
+        ":emailLower": { "S": email.lower() },
+        ":email": { "S": email },
+      },
+      ProjectionExpression="amount, created, course_name",
+    )
+  
     payments = deserialize(response)
     amounts = list(map(lambda obj: {
       'date': datetime.datetime.fromtimestamp(int(obj.get("created")) / 1000).strftime('%Y-%m-%d %H:%M:%S'),
@@ -26,9 +27,9 @@ def getRegistrationByEmail(email):
       'name': obj.get("course_name"),
     }, payments.get("Items")))
     return create_response(200, amounts)
-  except: 
-    raise ClientError("Error when attempting to retrieve registrations.")
-  
+  except ClientError as e:
+    return create_response(500, f'Error when attempting to retrieve registrations: {e.response['Error']['Message']}')
+
 def createCourseRegistration(body):
   if body.get("type").equals("payment_intent.succeeded"):
     session = body.get("data").get("object")
@@ -55,5 +56,5 @@ def createCourseRegistration(body):
         }
       )
       return create_response(200, "Transaction recorded successfully.")
-    except:
-      raise ClientError("Error when recording transaction.")
+    except ClientError as e:
+      return create_response(500, f'Error creating registration: {e.response['Error']['Message']}')

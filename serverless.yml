@@ -100,6 +100,30 @@ functions:
           path: /registration
           method: post
           cors: true
+  courses-lambda-get:
+    name: courses-lambda-get-${opt:stage}
+    package:
+      patterns:
+        - 'src/courses.py'
+        - 'src/courses_handler_get.py'
+    handler: src/courses_handler_get.handler
+    events:
+      - http:
+          path: /courses
+          method: get
+          cors: true
+  courses-lambda-post:
+    name: courses-lambda-post-${opt:stage}
+    package:
+      patterns:
+        - 'src/courses.py'
+        - 'src/courses_handler_post.py'
+    handler: src/courses_handler_post.handler
+    events:
+      - http:
+          path: /courses
+          method: post
+          cors: true
 resources:
   - Resources:
       IAMServerlessRole:
