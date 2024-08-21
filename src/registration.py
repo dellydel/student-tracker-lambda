@@ -28,7 +28,8 @@ def getRegistrationByEmail(email):
     }, payments.get("Items")))
     return create_response(200, amounts)
   except ClientError as e:
-    return create_response(500, f'Error when attempting to retrieve registrations: {e.response['Error']['Message']}')
+      error_message = e.response['Error']['Message']
+      return create_response(500, f'Internal server error: {error_message}')
 
 def createCourseRegistration(body):
   if body.get("type").equals("payment_intent.succeeded"):
@@ -57,4 +58,6 @@ def createCourseRegistration(body):
       )
       return create_response(200, "Transaction recorded successfully.")
     except ClientError as e:
-      return create_response(500, f'Error creating registration: {e.response['Error']['Message']}')
+      error_message = e.response['Error']['Message']
+      return create_response(500, f'Internal server error: {error_message}')
+

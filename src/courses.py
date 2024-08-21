@@ -12,7 +12,8 @@ def get_all_courses():
         courses = response['Items']
         return create_response(200, courses)
     except ClientError as e:
-        return create_response(500, f'Internal server error: {e.response['Error']['Message']}')
+        error_message = e.response['Error']['Message']
+        return create_response(500, f'Internal server error: {error_message}')
 
 def get_courses_by_id(course_ids):
     try:
@@ -20,7 +21,8 @@ def get_courses_by_id(course_ids):
         registered_courses = [course for course in courses if course['id'] in course_ids]
         return {'statusCode': 200, 'body': registered_courses}
     except ClientError as e:
-        return create_response(500, f'Internal server error: {e.response['Error']['Message']}')
+        error_message = e.response['Error']['Message']
+        return create_response(500, f'Internal server error: {error_message}')
 
 def get_course_by_id(course_id):
     try:
@@ -29,4 +31,5 @@ def get_course_by_id(course_id):
              return {'statusCode': 200, 'body': response['Item']}
         return create_response(404, 'Course not found')
     except ClientError as e:
-        return create_response(500, f'Internal server error: {e.response['Error']['Message']}')
+        error_message = e.response['Error']['Message']
+        return create_response(500, f'Internal server error: {error_message}')

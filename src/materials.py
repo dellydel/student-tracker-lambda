@@ -10,8 +10,8 @@ def get_course_materials(topic):
         files = generate_presigned_urls(objects)
         return create_response(200, files)
     except Exception as e:
-        print(f"Error fetching S3 contents: {str(e)}")
-        return create_response(500, {'error': 'Internal Server Error'})
+        error_message = e.response['Error']['Message']
+        return create_response(500, f'Internal server error: {error_message}')
     
 def list_all_materials(topic):
     bucket_name = "nextbyte-course-materials"
@@ -19,10 +19,11 @@ def list_all_materials(topic):
     try:
         response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
     except ClientError as e:
-        raise Exception(f"Error listing objects in S3 bucket: {e.response['Error']['Message']}")
+        error_message = e.response['Error']['Message']
+        return create_response(500, f'Internal server error: {error_message}')
 
     if 'IsTruncated' in response and response['IsTruncated']:
-        raise Exception("Course Materials List truncated")
+        return create_response(500, "Course Materials List truncated")
 
     objects = [obj for obj in response['Contents'] if not obj['Key'].endswith('/')]
     return objects
@@ -37,7 +38,6 @@ def generate_presigned_urls(objects):
                                                     ExpiresIn=1800)
              files.append({'name': obj['Key'], 'url': url})
         except ClientError as e:
-            print(f"Error generating presigned URL for {obj['Key']}: {e.response['Error']['Message']}")
+            error_message = e.response['Error']['Message']
+        return create_response(500, f'Internal server error: {error_message}')
     return files
-
-
