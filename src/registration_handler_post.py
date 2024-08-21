@@ -1,6 +1,4 @@
-from src.registration import createCourseRegistration 
-import json
+from src.registration import create_course_registration 
 
 def handler(event, _):
-    body = json.loads(event["body"])
-    return  createCourseRegistration(body)
+    return  create_course_registration(event)

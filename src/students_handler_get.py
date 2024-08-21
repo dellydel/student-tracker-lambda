@@ -1,4 +1,4 @@
-from http_response import create_response
+from src.http_response import create_response
 from src.students import get_student_by_id, get_student_by_email
 
 def handler(event, _):

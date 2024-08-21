@@ -1,14 +1,13 @@
 import boto3
 import json
 import os
-import datetime
 import uuid
 from src.http_response import create_response
 from time import time
 dynamodb = boto3.resource('dynamodb')
 sns = boto3.client('sns')
 
-def processContactRequest (name, email, message):
+def process_contact_request (name, email, message):
   table = dynamodb.Table(os.environ.get("CONTACT_TABLE"))
   table.put_item(
       Item={

@@ -1,14 +1,9 @@
 import json 
-from src.error_handler import handle_client_error
-from src.contact import processContactRequest
-from botocore.exceptions import ClientError
+from src.contact import process_contact_request
 
 def handler(event, _):
-  try:
     body = json.loads(event["body"])
     name = body.get("name")
     email = body.get("email")
     message = body.get("message")
-    return processContactRequest(name, email, message)
-  except ClientError as err:
-      handle_client_error(err)
+    return process_contact_request(name, email, message)

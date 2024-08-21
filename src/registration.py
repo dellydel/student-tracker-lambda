@@ -31,7 +31,7 @@ def getRegistrationByEmail(email):
       error_message = e.response['Error']['Message']
       return create_response(500, f'Internal server error: {error_message}')
 
-def createCourseRegistration(body):
+def create_course_registration(body):
   if body.get("type").equals("payment_intent.succeeded"):
     session = body.get("data").get("object")
     try:

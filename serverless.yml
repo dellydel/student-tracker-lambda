@@ -81,6 +81,9 @@ functions:
         - 'src/registration.py'
         - 'src/registration_handler_get.py'
     handler: src/registration_handler_get.handler
+    layers:
+      - !Ref PythonRequirementsLambdaLayer
+
     events:
       - http:
           path: /registration

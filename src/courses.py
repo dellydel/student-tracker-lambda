@@ -19,7 +19,7 @@ def get_courses_by_id(course_ids):
     try:
         courses = table.scan()['Items']
         registered_courses = [course for course in courses if course['id'] in course_ids]
-        return {'statusCode': 200, 'body': registered_courses}
+        return create_response(200, registered_courses)
     except ClientError as e:
         error_message = e.response['Error']['Message']
         return create_response(500, f'Internal server error: {error_message}')
@@ -28,7 +28,7 @@ def get_course_by_id(course_id):
     try:
         response = table.get_item(Key={'id': course_id})
         if 'Item' in response:
-             return {'statusCode': 200, 'body': response['Item']}
+            return create_response(200, response['Item'])
         return create_response(404, 'Course not found')
     except ClientError as e:
         error_message = e.response['Error']['Message']
